@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Header from './components/Header';
 import ProductCard from './components/ProductCard';
 import CartDrawer from './components/CartDrawer';
@@ -8,7 +8,7 @@ import CategoryFilter from './components/CategoryFilter';
 import LoginPage from './components/LoginPage';
 import { products, categories } from './data/products';
 import { useCBESuperApp } from './context/CBESuperAppContext';
-import VConsole from 'vconsole';
+// import VConsole from 'vconsole';
 
 
 export default function HomePage() {
@@ -16,10 +16,24 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+
+  useEffect(() => {
+    // Only run in browser environment
+    if (typeof window !== 'undefined') {
+      // Dynamically import VConsole to avoid SSR issues
+      import('vconsole').then((VConsole) => {
+        // Initialize VConsole - it will show in both dev and production
+        new VConsole.default({
+          theme: 'dark', // Optional: 'light' or 'dark'
+          // You can configure it further if needed
+        });
+      }).catch((error) => {
+        console.error('Failed to load VConsole:', error);
+      });
+    }
+  }, []); 
+
   // Initialize VConsole for debugging
-if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-  new VConsole();
-}
 
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
@@ -34,6 +48,7 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   if (!isAuthenticated && !isLoading) {
     return <LoginPage />;
   }
+
 
   // Show loading state
   if (isLoading) {
