@@ -2,13 +2,15 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
 import type { PaymentResult, PermissionResult, LocationResult, OrderPayload, AuthPayload } from '../types';
+import axios from 'axios';
 
 // SDK Configuration - Replace with actual values from CBE
 const SDK_CONFIG = {
-  appCode: 'DEMO_SHOP_001',
+  appCode: '092999',//'LE5s6Zu0',
   merchantCode: 'MERCHANT_001',
-  apiKey: 'demo_api_key',
+  apiKey: 'zgx++rlytWaOsySRGZ4CF3pKrQroiVIsmP/AXY1uEH0=',
   appName: 'CBE Mini Shop',
+  apiBaseUrl: 'https://qaapisuperapp.cbe.com.et/api/v1/cbesuperapp',
 };
 
 interface CBESuperAppContextType {
@@ -54,13 +56,55 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
     };
 
     // Set up callback handlers
-    window.handleAccessToken = (token: string) => {
-      console.log('Access UserIdentifier received From CBE SuperApp:', token);
-      setAccessToken(token);
-      setIsLoading(false);
-      // Store in session for persistence
-      if (typeof sessionStorage !== 'undefined') {
-        sessionStorage.setItem('cbe_access_token', token);
+    window.handleAccessToken = async (customerIdentifier: string) => {
+      console.log('Access UserIdentifier received From CBE SuperApp:', customerIdentifier);
+      
+      try {
+        setIsLoading(true);
+
+       
+        const response = await axios.post(
+          `${SDK_CONFIG.apiBaseUrl}/mini-apps/client/token`,
+          {
+            app_code: SDK_CONFIG.appCode,
+            customer_identifier: customerIdentifier,
+          },
+          {
+            headers: {
+              'x-api-key': SDK_CONFIG.apiKey,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        console.log('CBE API Response:', response.data);
+
+        // Extract token from response (adjust based on actual API response structure)
+        const clientToken = response.data?.token || response.data?.data?.token || response.data?.access_token;
+        
+        if (clientToken) {
+          setAccessToken(clientToken);
+          setIsLoading(false);
+          
+          // Store tokens in session
+          if (typeof sessionStorage !== 'undefined') {
+            sessionStorage.setItem('cbe_access_token', customerIdentifier);
+            sessionStorage.setItem('cbe_client_token', clientToken);
+          }
+          
+          console.log('Login successful, token stored');
+        } else {
+          throw new Error('No token received from API');
+        }
+      } catch (error) {
+        console.error('Error calling CBE API:', error);
+        setIsLoading(false);
+        
+        // Fallback: still store the customer identifier even if API call fails
+        setAccessToken(customerIdentifier);
+        if (typeof sessionStorage !== 'undefined') {
+          sessionStorage.setItem('cbe_access_token', customerIdentifier);
+        }
       }
     };
 
@@ -149,7 +193,7 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
     const payload = JSON.stringify({
       functionName: 'fetchAccessToken',
       params: {
-        appcode: 'LE5s6Zu0',
+        appcode: SDK_CONFIG.appCode,
         callbackName: 'handleAccessToken',
       },
     });
@@ -164,6 +208,7 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
     setCameraPermission('pending');
     if (typeof sessionStorage !== 'undefined') {
       sessionStorage.removeItem('cbe_access_token');
+      sessionStorage.removeItem('cbe_client_token');
     }
   }, []);
 
@@ -192,13 +237,13 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
 
     const orderPayload: OrderPayload = {
       app_code: SDK_CONFIG.appCode,
-      merchant_code: SDK_CONFIG.merchantCode,
-      merchant_reference: reference,
-      title: title,
-      total_amount: amount.toFixed(2),
+      merchant_code:  '663689013779061', //SDK_CONFIG.merchantCode,
+      merchant_reference:  'YWKKHY',
+      title:  'Some title', // title,
+      total_amount: '5', // amount.toFixed(2),
       currency: 'ETB',
-      sign: 'generated_signature_here',
-      confirm_payload: {},
+      sign: 'tuGTWrSSV5Np/PFvgQn+eG5Xim6BkFxvnut1JfqN7OigiCGj4hs0suUkdPj5kGthQy6+OD0fePitHYFy9fGmDw==',
+      confirm_payload: "1b1d2a0881f70b368380f06ce15aba36fa48bd4290ca3803abfdb2574b5ee884",
     };
 
     const authPayload: AuthPayload = {

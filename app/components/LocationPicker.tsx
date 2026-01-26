@@ -17,10 +17,13 @@ export default function LocationPicker({ address, onAddressSet }: LocationPicker
     setIsLoading(true);
     
     const locationPermission = permissions.find(p => p.permission === 'Location');
+    console.log('locationPermission', locationPermission);
     
     if (!locationPermission || locationPermission.status !== 'granted') {
+      console.log('requesting location permission');
       requestLocationPermission();
     } else {
+      console.log('getting current location');
       getCurrentLocation();
     }
     

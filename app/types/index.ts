@@ -42,7 +42,7 @@ export interface OrderPayload {
   total_amount: string;
   currency: string;
   sign: string;
-  confirm_payload: Record<string, unknown>;
+  confirm_payload: string;
 }
 
 export interface AuthPayload {
