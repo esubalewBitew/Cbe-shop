@@ -8,11 +8,18 @@ import CategoryFilter from './components/CategoryFilter';
 import LoginPage from './components/LoginPage';
 import { products, categories } from './data/products';
 import { useCBESuperApp } from './context/CBESuperAppContext';
+import VConsole from 'vconsole';
+
 
 export default function HomePage() {
   const { isAuthenticated, isLoading } = useCBESuperApp();
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Initialize VConsole for debugging
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  new VConsole();
+}
 
   const filteredProducts = useMemo(() => {
     return products.filter(product => {

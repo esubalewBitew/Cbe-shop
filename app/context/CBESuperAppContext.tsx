@@ -55,7 +55,7 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
 
     // Set up callback handlers
     window.handleAccessToken = (token: string) => {
-      console.log('Access Token received:', token);
+      console.log('Access UserIdentifier received From CBE SuperApp:', token);
       setAccessToken(token);
       setIsLoading(false);
       // Store in session for persistence
@@ -74,6 +74,7 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
         console.error('Permission request failed');
         return;
       }
+      console.log('Location Permission Result:', result);
       setPermissions(result as PermissionResult[]);
       
       // Check for camera permission
@@ -85,6 +86,7 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
       // If location permission granted, fetch location
       const locationPerm = (result as PermissionResult[]).find(p => p.permission === 'Location');
       if (locationPerm?.status === 'granted') {
+        console.log('Location permission granted, fetching location');
         getCurrentLocation();
       }
     };
@@ -131,6 +133,7 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
       console.log('SDK not available - simulating login');
       // Simulate login for testing
       setTimeout(() => {
+        console.log('Simulating login for testing');
         const demoToken = 'demo_token_' + Date.now();
         setAccessToken(demoToken);
         setIsLoading(false);
@@ -141,10 +144,12 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    console.log('Fetching access token from CBE SuperApp');
+
     const payload = JSON.stringify({
       functionName: 'fetchAccessToken',
       params: {
-        appcode: SDK_CONFIG.appCode,
+        appcode: 'LE5s6Zu0',
         callbackName: 'handleAccessToken',
       },
     });
