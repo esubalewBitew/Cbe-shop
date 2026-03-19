@@ -27,13 +27,12 @@ export default function LocationPicker({ address, onAddressSet }: LocationPicker
       getCurrentLocation();
     }
     
-    // Simulate delay for UX
+  
     setTimeout(() => {
       setIsLoading(false);
     }, 1500);
   };
 
-  // Update parent when location changes
   React.useEffect(() => {
     if (location && location.latitude && location.longitude) {
       onAddressSet({

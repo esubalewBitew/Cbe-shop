@@ -4,23 +4,15 @@ import React, { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
 import DeliverySelector from '../components/DeliverySelector';
-import LocationPicker from '../components/LocationPicker';
 import OrderSummary from '../components/OrderSummary';
 import PaymentButton from '../components/PaymentButton';
 import { deliveryOptions } from '../data/products';
-import type { DeliveryAddress } from '../types';
 
-type CheckoutStep = 'delivery' | 'location' | 'payment' | 'success';
+type CheckoutStep = 'delivery' | 'payment' | 'success';
 
 export default function CheckoutPage() {
-  const { items, deliveryOption, setDeliveryOption, deliveryAddress, setDeliveryAddress, clearCart, currentOrder } = useCart();
+  const { items, deliveryOption, setDeliveryOption, clearCart, currentOrder } = useCart();
   const [currentStep, setCurrentStep] = useState<CheckoutStep>('delivery');
-
-  const needsLocation = deliveryOption && deliveryOption.id !== 'pickup';
-
-  const handleAddressSet = useCallback((address: DeliveryAddress) => {
-    setDeliveryAddress(address);
-  }, [setDeliveryAddress]);
 
   const handlePaymentSuccess = useCallback(() => {
     setCurrentStep('success');
@@ -115,19 +107,8 @@ export default function CheckoutPage() {
           <span>Delivery</span>
         </div>
         <div className="progress-line" />
-        <div className={`progress-step ${currentStep === 'location' ? 'active' : ''} ${deliveryAddress ? 'completed' : ''}`}>
-          <div className="step-indicator">
-            {deliveryAddress ? (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-            ) : '2'}
-          </div>
-          <span>Location</span>
-        </div>
-        <div className="progress-line" />
         <div className={`progress-step ${currentStep === 'payment' ? 'active' : ''}`}>
-          <div className="step-indicator">3</div>
+          <div className="step-indicator">2</div>
           <span>Payment</span>
         </div>
       </div>
@@ -144,7 +125,7 @@ export default function CheckoutPage() {
           {deliveryOption && (
             <button 
               className="continue-btn"
-              onClick={() => setCurrentStep(needsLocation ? 'location' : 'payment')}
+              onClick={() => setCurrentStep('payment')}
             >
               Continue
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -156,7 +137,7 @@ export default function CheckoutPage() {
         </section>
 
         {/* Location Selection (if needed) */}
-        {needsLocation && (
+        {/* {needsLocation && (
           <section className={`checkout-section ${currentStep === 'location' ? 'active' : ''}`}>
             <LocationPicker
               address={deliveryAddress}
@@ -175,7 +156,7 @@ export default function CheckoutPage() {
               </button>
             )}
           </section>
-        )}
+        )} */}
 
         {/* Payment */}
         <section className={`checkout-section ${currentStep === 'payment' ? 'active' : ''}`}>

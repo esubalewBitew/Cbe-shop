@@ -18,14 +18,11 @@ export default function HomePage() {
 
 
   useEffect(() => {
-    // Only run in browser environment
     if (typeof window !== 'undefined') {
-      // Dynamically import VConsole to avoid SSR issues
       import('vconsole').then((VConsole) => {
-        // Initialize VConsole - it will show in both dev and production
         new VConsole.default({
           theme: 'dark', // Optional: 'light' or 'dark'
-          // You can configure it further if needed
+         
         });
       }).catch((error) => {
         console.error('Failed to load VConsole:', error);
