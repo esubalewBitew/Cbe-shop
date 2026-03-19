@@ -34,10 +34,8 @@ export default function PaymentButton({ onPaymentSuccess }: PaymentButtonProps) 
     
     setIsProcessing(true);
     
-    // Create order first
     const order = createOrder();
-    
-    // Initiate payment via CBE SuperApp SDK
+
     initiatePayment(
       total,
       order.id,

@@ -236,7 +236,7 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
     }
 
     const orderPayload: OrderPayload = {
-      app_code: SDK_CONFIG.appCode,
+      app_code: '092999',//SDK_CONFIG.appCode,
       merchant_code:  '663689013779061', //SDK_CONFIG.merchantCode,
       merchant_reference:  'YWKKHY',
       title:  'Some title', // title,
