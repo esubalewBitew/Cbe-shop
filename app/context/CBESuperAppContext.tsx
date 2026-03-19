@@ -302,11 +302,11 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const getCurrentLocation = useCallback(() => {
-    // if (!window.cbesuperapp) {
-    //   console.log('SDK not available for location');
-    //   setLocation({ latitude: 9.0054, longitude: 38.7636 });
-    //   return;
-    // }
+    if (!window.cbesuperapp) {
+      console.log('SDK not available for location');
+      setLocation({ latitude: 9.0054, longitude: 38.7636 });
+      return;
+    }
 
     const locationRequest = JSON.stringify({
       functionName: 'fetchCurrentLocation',
