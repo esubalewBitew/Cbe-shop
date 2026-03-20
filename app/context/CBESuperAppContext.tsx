@@ -8,7 +8,9 @@ import axios from 'axios';
 const SDK_CONFIG = {
   appCode: '092999',//'LE5s6Zu0',
   merchantCode: 'MERCHANT_001',
-  apiKey: 'zgx++rlytWaOsySRGZ4CF3pKrQroiVIsmP/AXY1uEH0=',
+  // Used only for the SuperApp SDK payload (if required by the SDK).
+  // Keep secrets out of browser calls for token fetching by using the server-side proxy.
+  apiKey: process.env.NEXT_PUBLIC_CBE_API_KEY || '',
   appName: 'CBE Mini Shop',
   apiBaseUrl: 'https://qaapisuperapp.cbe.com.et/api/v1/cbesuperapp',
 };
@@ -67,14 +69,13 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
 
        
         const response = await axios.post(
-          `${SDK_CONFIG.apiBaseUrl}/mini-apps/client/token`,
+          '/api/cbe-client-token',
           {
             app_code: SDK_CONFIG.appCode,
-            //customer_identifier: customerIdentifier,
+            // customer_identifier: customerIdentifier,
           },
           {
             headers: {
-              'x-api-key': SDK_CONFIG.apiKey,
               'Content-Type': 'application/json',
             },
           }
@@ -162,14 +163,13 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
 
        
         const response = await axios.post(
-          `${SDK_CONFIG.apiBaseUrl}/mini-apps/client/token`,
+          '/api/cbe-client-token',
           {
             app_code: SDK_CONFIG.appCode,
-            //customer_identifier: customerIdentifier,
+            // customer_identifier: customerIdentifier,
           },
           {
             headers: {
-              'x-api-key': SDK_CONFIG.apiKey,
               'Content-Type': 'application/json',
             },
           }
