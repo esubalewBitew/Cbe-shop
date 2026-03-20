@@ -55,6 +55,9 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
       return false;
     };
 
+
+
+
     // Set up callback handlers
     window.handleAccessToken = async (customerIdentifier: string) => {
       console.log('Access UserIdentifier received From CBE SuperApp:', customerIdentifier);
@@ -67,7 +70,7 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
           `${SDK_CONFIG.apiBaseUrl}/mini-apps/client/token`,
           {
             app_code: SDK_CONFIG.appCode,
-            customer_identifier: customerIdentifier,
+            //customer_identifier: customerIdentifier,
           },
           {
             headers: {
@@ -100,8 +103,7 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
         console.error('Error calling CBE API:', error);
         setIsLoading(false);
         
-        // Fallback: still store the customer identifier even if API call fails
-        setAccessToken(customerIdentifier);
+       // setAccessToken(customerIdentifier);
         if (typeof sessionStorage !== 'undefined') {
           sessionStorage.setItem('cbe_access_token', customerIdentifier);
         }
@@ -151,6 +153,62 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
 
     // Check SDK availability
     checkSDK();
+
+    const handleAccessToken = async (customerIdentifier: string) => {
+      console.log('Access UserIdentifier received From CBE SuperApp:', customerIdentifier);
+      
+      try {
+        setIsLoading(true);
+
+       
+        const response = await axios.post(
+          `${SDK_CONFIG.apiBaseUrl}/mini-apps/client/token`,
+          {
+            app_code: SDK_CONFIG.appCode,
+            //customer_identifier: customerIdentifier,
+          },
+          {
+            headers: {
+              'x-api-key': SDK_CONFIG.apiKey,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        console.log('CBE API Response:', response.data);
+
+        // Extract token from response (adjust based on actual API response structure)
+        const clientToken = response.data?.token || response.data?.data?.token || response.data?.access_token;
+        
+        if (clientToken) {
+          setAccessToken(clientToken);
+          setIsLoading(false);
+          
+          // Store tokens in session
+          if (typeof sessionStorage !== 'undefined') {
+            sessionStorage.setItem('cbe_access_token', customerIdentifier);
+            sessionStorage.setItem('cbe_client_token', clientToken);
+          }
+          
+          console.log('Login successful, token stored');
+        } else {
+          throw new Error('No token received from API');
+        }
+      } catch (error) {
+        console.error('Error calling CBE API:', error);
+        setIsLoading(false);
+        
+       // setAccessToken(customerIdentifier);
+        if (typeof sessionStorage !== 'undefined') {
+          sessionStorage.setItem('cbe_access_token', customerIdentifier);
+        }
+      }
+    };
+
+    handleAccessToken('1234567890');
+
+
+ 
 
     // Check for stored token
     if (typeof sessionStorage !== 'undefined') {
@@ -212,7 +270,11 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  //handleAccessToken('1234567890');
+ 
+
   const initiatePayment = useCallback((amount: number, reference: string, title: string) => {
+     
     if (!window.cbesuperapp) {
       console.log('SDK not available for payment');
       // Simulate payment for testing
