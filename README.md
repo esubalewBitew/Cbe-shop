@@ -27,6 +27,10 @@ CBE_COOKIE=PASTE_YOUR_COOKIE_VALUE
 # Your SDK/payment payload is constructed in the browser using NEXT_PUBLIC vars.
 # If your SDK/payment flow needs x-api-key, keep this set.
 NEXT_PUBLIC_CBE_API_KEY=PASTE_YOUR_x-api-key_VALUE
+
+# Server-side signing credentials (used by app/api/cbe-generate-order-auth)
+CBE_APP_SECRET=PASTE_APP_SECRET_FROM_CREDENTIAL
+CBE_PRIVATE_KEY=PASTE_PRIVATE_KEY_FROM_CREDENTIAL
 ```
 
 After editing env vars, restart the dev server (`npm run dev`).
@@ -53,6 +57,57 @@ Make sure:
 - `NEXT_PUBLIC_CBE_API_KEY` is marked as **public**
 
 Then redeploy.
+
+## CBE Payment Signing (generate `sign` + `confirm_payload`)
+
+### Why this exists
+Your `initiatePayment` payload previously used hardcoded values for:
+- `orderPayload.sign` (Ed25519)
+- `orderPayload.confirm_payload` (HMAC-SHA256)
+
+Those should be generated dynamically from the order fields using your private keys/secrets on the server.
+
+### New endpoint
+`POST /api/cbe-generate-order-auth`
+
+**Request body**
+```json
+{
+  "app_code": "092999",
+  "merchant_code": "663689013779061",
+  "merchant_reference": "txn-2345",
+  "title": "Some title",
+  "total_amount": 5,
+  "currency": "ETB",
+  "credit_account_number": ""
+}
+```
+`credit_account_number` is optional (if omitted, the server uses `""`).
+
+**Response**
+```json
+{
+  "sign": "<base64-ed25519-signature>",
+  "confirm_payload": "<hex-hmac-sha256>"
+}
+```
+
+### Env vars required (server-side)
+Add to `cbeshopminidemo/.env.local` (and to Vercel env vars) the following:
+```env
+# Server-only signing credentials (do not expose to browser)
+CBE_APP_SECRET=PASTE_APP_SECRET_FROM_CREDENTIAL
+CBE_PRIVATE_KEY=PASTE_PRIVATE_KEY_FROM_CREDENTIAL
+```
+
+### Validate signing output locally
+Set the env vars above, then run:
+
+```bash
+node scripts/verify-cbe-order-auth.mjs
+```
+
+It compares the generated output against the old hardcoded constants that were previously in `app/context/CBESuperAppContext.tsx`.
 
 ### Important security note
 Do **not** commit real secrets to git (never push `.env.local`).

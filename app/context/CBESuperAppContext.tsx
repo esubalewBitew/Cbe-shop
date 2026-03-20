@@ -273,7 +273,7 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
   //handleAccessToken('1234567890');
  
 
-  const initiatePayment = useCallback((amount: number, reference: string, title: string) => {
+  const initiatePayment = useCallback(async (amount: number, reference: string, title: string) => {
      
     if (!window.cbesuperapp) {
       console.log('SDK not available for payment');
@@ -297,15 +297,44 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const orderPayload: OrderPayload = {
-      app_code: '092999',//SDK_CONFIG.appCode,
-      merchant_code:  '663689013779061', //SDK_CONFIG.merchantCode,
-      merchant_reference:  'YWKKHY',
-      title:  'Some title', // title,
-      total_amount: '5', // amount.toFixed(2),
+    // Order payload must include `sign` and `confirm_payload`.
+    // We generate them server-side using app secrets/keys to avoid hardcoding.
+    const orderBase = {
+      app_code: '092999', // SDK_CONFIG.appCode,
+      merchant_code: '003411488457437', // SDK_CONFIG.merchantCode,
+      merchant_reference: reference,
+      title,
+      total_amount: amount.toString(),
       currency: 'ETB',
-      sign: 'tuGTWrSSV5Np/PFvgQn+eG5Xim6BkFxvnut1JfqN7OigiCGj4hs0suUkdPj5kGthQy6+OD0fePitHYFy9fGmDw==',
-      confirm_payload: "1b1d2a0881f70b368380f06ce15aba36fa48bd4290ca3803abfdb2574b5ee884",
+    };
+
+    const authRes = await fetch('/api/cbe-generate-order-auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...orderBase,
+        // For signing, total_amount must be a number (not a string).
+        total_amount: amount,
+        // credit_account_number is optional; if omitted, proxy uses "".
+      }),
+    });
+
+    if (!authRes.ok) {
+      const errText = await authRes.text().catch(() => '');
+      throw new Error(`Failed to generate order auth (${authRes.status}): ${errText}`);
+    }
+
+    const { sign, confirm_payload } = (await authRes.json()) as {
+      sign: string;
+      confirm_payload: string;
+    };
+
+    const orderPayload: OrderPayload = {
+      ...orderBase,
+      sign,
+      confirm_payload,
     };
 
     const authPayload: AuthPayload = {
