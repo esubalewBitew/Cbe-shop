@@ -14,7 +14,7 @@ export interface PaymentResult {
     merchant_code: string;
     merchant_reference: string;
     title: string;
-    total_amount: number;
+    total_amount: string;
     currency: string;
   };
   message?: string;
@@ -39,7 +39,7 @@ export interface OrderPayload {
   merchant_code: string;
   merchant_reference: string;
   title: string;
-  total_amount: number;
+  total_amount: string;
   currency: string;
   sign: string;
   confirm_payload: string;
