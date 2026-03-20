@@ -287,7 +287,7 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
             merchant_code: SDK_CONFIG.merchantCode,
             merchant_reference: reference,
             title: title,
-            total_amount: amount.toFixed(2),
+            total_amount: amount,
             currency: 'ETB',
           },
           message: 'Payment confirmed (Demo)',
@@ -304,7 +304,7 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
       merchant_code: '003411488457437', // SDK_CONFIG.merchantCode,
       merchant_reference: reference,
       title,
-      total_amount: amount.toString(),
+      total_amount: amount,
       currency: 'ETB',
     };
 
