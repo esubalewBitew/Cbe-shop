@@ -1,5 +1,62 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## CBE SuperApp Token Proxy (CORS Fix)
+
+### Why this exists
+Your browser blocked calls to:
+`https://qaapisuperapp.cbe.com.et/api/v1/cbesuperapp/mini-apps/client/token`
+because the upstream API doesn’t return `Access-Control-Allow-Origin` for your site (CORS preflight fails).
+
+To fix this, the app uses a same-origin **Next.js proxy route**. The browser calls your app (`/api/...`) and your server calls the upstream API (server-to-server), so the browser never performs the CORS preflight against `qaapisuperapp...`.
+
+### What to look at in the code
+- Proxy endpoint: `app/api/cbe-client-token/route.ts`
+- Frontend token fetch calls updated in: `app/context/CBESuperAppContext.tsx`
+
+### Local setup (env vars)
+Create/update: `cbeshopminidemo/.env.local`
+
+```env
+# Server-side proxy (used by app/api/cbe-client-token/route.ts)
+CBE_API_BASE_URL=https://qaapisuperapp.cbe.com.et/api/v1/cbesuperapp
+CBE_API_KEY=PASTE_YOUR_x-api-key_VALUE
+
+# Upstream may require a cookie. Put the value you used in Postman here.
+CBE_COOKIE=PASTE_YOUR_COOKIE_VALUE
+
+# Your SDK/payment payload is constructed in the browser using NEXT_PUBLIC vars.
+# If your SDK/payment flow needs x-api-key, keep this set.
+NEXT_PUBLIC_CBE_API_KEY=PASTE_YOUR_x-api-key_VALUE
+```
+
+After editing env vars, restart the dev server (`npm run dev`).
+
+### Test the proxy locally
+1. Start dev server:
+   ```bash
+   npm run dev
+   ```
+2. Call the proxy:
+   ```bash
+   curl -sS -X POST http://localhost:3000/api/cbe-client-token \
+     -H 'Content-Type: application/json' \
+     -d '{"app_code":"092999"}'
+   ```
+
+Expected: a JSON response containing the token (same structure as Postman, e.g. `data.token`).
+
+### Vercel deployment (env vars)
+In **Vercel → Project → Settings → Environment Variables**, set the same variables as above.
+
+Make sure:
+- `CBE_API_KEY`, `CBE_API_BASE_URL`, `CBE_COOKIE` are **server-side** variables (not public)
+- `NEXT_PUBLIC_CBE_API_KEY` is marked as **public**
+
+Then redeploy.
+
+### Important security note
+Do **not** commit real secrets to git (never push `.env.local`).
+
 ## Getting Started
 
 First, run the development server:
