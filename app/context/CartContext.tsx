@@ -70,6 +70,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   }, [removeFromCart]);
 
+
+
+  
   const clearCart = useCallback(() => {
     setItems([]);
     setDeliveryOptionState(null);
