@@ -1,4 +1,3 @@
-// CBE SuperApp SDK Types
 export interface CBESuperAppSDK {
   send: (payload: string) => void;
 }

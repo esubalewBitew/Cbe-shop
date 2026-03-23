@@ -30,9 +30,7 @@ export default function Scanner({ isOpen, onClose }: ScannerProps) {
       setIsScanning(false);
       setScanResult(result);
       
-      // Try to find a product (in real app, this would lookup by barcode)
-      // For demo, we'll randomly select a product
-      const randomProduct = products[Math.floor(Math.random() * products.length)];
+     const randomProduct = products[Math.floor(Math.random() * products.length)];
       setFoundProduct(randomProduct);
     });
   };

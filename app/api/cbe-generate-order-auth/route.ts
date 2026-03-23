@@ -85,8 +85,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // This object shape must match the signing script you shared.
-  // Specifically: credit_account_number is included (empty string allowed).
   const contentToSign = {
     app_code,
     merchant_code,

@@ -8,8 +8,6 @@ import axios from 'axios';
 const SDK_CONFIG = {
   appCode: '092999',//'LE5s6Zu0',
   merchantCode: 'MERCHANT_001',
-  // Used only for the SuperApp SDK payload (if required by the SDK).
-  // Keep secrets out of browser calls for token fetching by using the server-side proxy.
   apiKey: process.env.NEXT_PUBLIC_CBE_API_KEY || '',
   appName: 'CBE Mini Shop',
   apiBaseUrl: 'https://qaapisuperapp.cbe.com.et/api/v1/cbesuperapp',
@@ -48,7 +46,6 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
 
   // Initialize SDK and set up callbacks
   useEffect(() => {
-    // Check if SDK is available
     const checkSDK = () => {
       if (typeof window !== 'undefined' && window.cbesuperapp) {
         setIsSDKAvailable(true);
@@ -83,7 +80,6 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
 
         console.log('CBE API Response:', response.data);
 
-        // Extract token from response (adjust based on actual API response structure)
         const clientToken = response.data?.token || response.data?.data?.token || response.data?.access_token;
         
         if (clientToken) {
@@ -124,7 +120,6 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
       console.log('Location Permission Result:', result);
       setPermissions(result as PermissionResult[]);
       
-      // Check for camera permission
       const cameraPerm = (result as PermissionResult[]).find(p => p.permission === 'Camera');
       if (cameraPerm) {
         setCameraPermission(cameraPerm.status);
@@ -177,14 +172,12 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
 
         console.log('CBE API Response:', response.data);
 
-        // Extract token from response (adjust based on actual API response structure)
         const clientToken = response.data?.token || response.data?.data?.token || response.data?.access_token;
         
         if (clientToken) {
           setAccessToken(clientToken);
           setIsLoading(false);
           
-          // Store tokens in session
           if (typeof sessionStorage !== 'undefined') {
             sessionStorage.setItem('cbe_access_token', customerIdentifier);
             sessionStorage.setItem('cbe_client_token', clientToken);
@@ -210,7 +203,6 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
 
  
 
-    // Check for stored token
     if (typeof sessionStorage !== 'undefined') {
       const storedToken = sessionStorage.getItem('cbe_access_token');
       if (storedToken) {
@@ -218,7 +210,6 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    // Cleanup
     return () => {
       delete window.handleAccessToken;
       delete window.handlePaymentResult;
@@ -277,7 +268,6 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
      
     if (!window.cbesuperapp) {
       console.log('SDK not available for payment');
-      // Simulate payment for testing
       setTimeout(() => {
         setPaymentResult({
           success: true,
@@ -297,8 +287,6 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // Order payload must include `sign` and `confirm_payload`.
-    // We generate them server-side using app secrets/keys to avoid hardcoding.
     const orderBase = {
       app_code: '092999', // SDK_CONFIG.appCode,
       merchant_code: '003411488457437', // SDK_CONFIG.merchantCode,

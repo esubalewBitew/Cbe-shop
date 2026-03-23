@@ -49,7 +49,6 @@ export async function POST(req: NextRequest) {
   try {
     upstreamRes = await fetch(upstreamUrl, {
       method: "POST",
-      // Ensure fresh call; this token endpoint should not be cached.
       cache: "no-store",
       headers: {
         "x-api-key": upstreamApiKey,
@@ -59,7 +58,6 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         app_code,
         ...(customer_identifier ? { customer_identifier } : {}),
-        // NOTE: keep payload shape aligned with your Postman example
       }),
     });
   } catch (err) {
@@ -78,13 +76,11 @@ export async function POST(req: NextRequest) {
 
   const contentType = upstreamRes.headers.get("content-type") || "";
 
-  // Pass through the upstream response to keep the frontend parsing logic unchanged.
   if (contentType.includes("application/json")) {
     try {
       const data = await upstreamRes.json();
       return NextResponse.json(data, { status: upstreamRes.status });
     } catch {
-      // Fallback: sometimes content-type says json but body isn't.
       const text = await upstreamRes.text();
       return new NextResponse(text, {
         status: upstreamRes.status,

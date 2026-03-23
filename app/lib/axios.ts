@@ -13,7 +13,6 @@ const apiClient = axios.create({
 // Request interceptor
 apiClient.interceptors.request.use(
   (config) => {
-    // Add auth token if available
     if (typeof window !== 'undefined') {
       const token = sessionStorage.getItem('cbe_access_token');
       if (token) {
@@ -33,9 +32,7 @@ apiClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Handle errors globally
     if (error.response?.status === 401) {
-      // Handle unauthorized
       if (typeof window !== 'undefined') {
         sessionStorage.removeItem('cbe_access_token');
       }

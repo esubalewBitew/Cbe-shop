@@ -8,7 +8,6 @@ import CategoryFilter from './components/CategoryFilter';
 import LoginPage from './components/LoginPage';
 import { products, categories } from './data/products';
 import { useCBESuperApp } from './context/CBESuperAppContext';
-// import VConsole from 'vconsole';
 
 
 export default function HomePage() {
@@ -30,7 +29,7 @@ export default function HomePage() {
     }
   }, []); 
 
-  // Initialize VConsole for debugging
+ 
 
   const filteredProducts = useMemo(() => {
     return products.filter(product => {

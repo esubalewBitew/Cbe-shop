@@ -8,7 +8,6 @@ export default function LoginPage() {
 
   return (
     <div className="login-page">
-      {/* Background Pattern */}
       <div className="login-bg">
         <div className="bg-pattern"></div>
         <div className="bg-gradient"></div>
@@ -16,7 +15,7 @@ export default function LoginPage() {
 
       {/* Content */}
       <div className="login-content">
-        {/* Logo Section */}
+   
         <div className="login-header">
           <div className="login-logo">
             <span className="logo-emoji">🛍️</span>

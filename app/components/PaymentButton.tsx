@@ -24,7 +24,7 @@ export default function PaymentButton({ onPaymentSuccess }: PaymentButtonProps) 
         onPaymentSuccess();
       }
       
-      // Clear payment result after handling
+  
       clearPaymentResult();
     }
   }, [paymentResult, onPaymentSuccess, clearPaymentResult]);

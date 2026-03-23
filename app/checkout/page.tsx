@@ -20,10 +20,9 @@ export default function CheckoutPage() {
 
   const handleNewOrder = () => {
     clearCart();
-    // Redirect to home would happen here
   };
 
-  // Empty cart redirect
+
   if (items.length === 0 && currentStep !== 'success') {
     return (
       <div className="checkout-page">
@@ -136,7 +135,7 @@ export default function CheckoutPage() {
           )}
         </section>
 
-        {/* Location Selection (if needed) */}
+        {/* Location Selection */}
         {/* {needsLocation && (
           <section className={`checkout-section ${currentStep === 'location' ? 'active' : ''}`}>
             <LocationPicker
@@ -158,7 +157,7 @@ export default function CheckoutPage() {
           </section>
         )} */}
 
-        {/* Payment */}
+       
         <section className={`checkout-section ${currentStep === 'payment' ? 'active' : ''}`}>
           <OrderSummary />
           <PaymentButton onPaymentSuccess={handlePaymentSuccess} />

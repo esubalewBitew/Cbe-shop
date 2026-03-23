@@ -1,13 +1,7 @@
 @import "tailwindcss";
 
-/* =========================================
-   HABESHA SHOP - Ethiopian Mini App Styles
-   A distinctive, warm design inspired by 
-   Ethiopian coffee culture and crafts
-   ========================================= */
 
 :root {
-  /* Core Color Palette - Ethiopian inspired */
   --color-primary: #0d4f3c;
   --color-primary-light: #1a7a5c;
   --color-primary-dark: #083328;
@@ -89,9 +83,6 @@ a {
   text-decoration: none;
 }
 
-/* =========================================
-   APP CONTAINER
-   ========================================= */
 
 .app {
   min-height: 100dvh;

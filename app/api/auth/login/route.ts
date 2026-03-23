@@ -1,4 +1,3 @@
-// app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
@@ -14,13 +13,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: Add your actual authentication logic here
-    // For example:
-    // - Verify token with CBE backend
-    // - Check user in database
-    // - Generate session token
-    // - Store user session
-
     // Mock response for now
     const mockUser = {
       id: 'user_' + Date.now(),
@@ -29,7 +21,7 @@ export async function POST(request: NextRequest) {
       email: 'user@example.com',
     };
 
-    // Simulate API delay
+    //API delay
     await new Promise(resolve => setTimeout(resolve, 500));
 
     return NextResponse.json({

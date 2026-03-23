@@ -18,13 +18,13 @@ export default function CartDrawer() {
 
   return (
     <>
-      {/* Backdrop */}
+    
       <div 
         className={`cart-backdrop ${isCartOpen ? 'open' : ''}`} 
         onClick={closeCart}
       />
       
-      {/* Drawer */}
+     
       <div className={`cart-drawer ${isCartOpen ? 'open' : ''}`}>
         <div className="cart-header">
           <h2 className="cart-title">

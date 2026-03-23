@@ -1,4 +1,3 @@
-// app/lib/api/auth.ts
 import apiClient from '../axios';
 
 export interface LoginRequest {
