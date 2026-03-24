@@ -40,7 +40,7 @@ export default function HomePage() {
     });
   }, [activeCategory, searchQuery]);
 
-  // Show login page if not authenticated
+
   if (!isAuthenticated && !isLoading) {
     return <LoginPage />;
   }
