@@ -6,8 +6,8 @@ import axios from 'axios';
 
 // SDK Configuration - Replace with actual values from CBE
 const SDK_CONFIG = {
-  appCode: 'L5Cz9BCt',//'LE5s6Zu0',
-  merchantCode: '795293670343491',//'MERCHANT_001',
+  appCode: 'C61nWLWF',//'LE5s6Zu0',
+  merchantCode: '908115214270684',//'MERCHANT_001',
   apiKey: process.env.NEXT_PUBLIC_CBE_API_KEY || '',
   appName: 'CBE Mini Shop',
   apiBaseUrl: 'https://qaapisuperapp.cbe.com.et/api/v1/cbesuperapp',
@@ -288,8 +288,8 @@ export function CBESuperAppProvider({ children }: { children: ReactNode }) {
     }
 
     const orderBase = {
-      app_code: 'L5Cz9BCt',//'092999', // SDK_CONFIG.appCode,
-      merchant_code: '795293670343491',//,'003411488457437', // SDK_CONFIG.merchantCode,
+      app_code: 'C61nWLWF',//'092999', // SDK_CONFIG.appCode,
+      merchant_code: '908115214270684',//,'003411488457437', // SDK_CONFIG.merchantCode,
       merchant_reference: reference,
       title,
       total_amount: amount,
